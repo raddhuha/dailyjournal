@@ -36,6 +36,20 @@ include "koneksi.php";
       img:hover {
         filter: grayscale(0%);
       }
+      .about-me-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+      }
+      .about-me-container img {
+        cursor: pointer;
+      }
+      .about-me-container img.centered {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
     </style>
   </head>
   <body>
@@ -57,6 +71,15 @@ include "koneksi.php";
             <li class="nav-item">
               <a class="nav-link" href="#gallery">Gallery</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#schedule">Schedule</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About Me</a>
+            </li>
+            <li class="nav-item">
+              <a class="bg-danger rounded-pill nav-link text-white fw-bold" href="admin.php">Login</a>
+            </li>
             <li class="nav-item p-1">
               <img id="light" src="img/light.jpg" style="width: 25px;" alt="">
             </li>
@@ -70,7 +93,7 @@ include "koneksi.php";
     <!-- nav end -->
 
     <!-- hero begin -->
-    <section id="hero" class="text-center p-5 bg-info-subtle text-sm-start">
+    <section id="hero" class="text-center p-5 bg-danger-subtle text-sm-start">
       <div class="container">
         <div class="d-sm-flex flex-sm-row-reverse align-items-center">
           <img src="img/back.jpg" class="car img-fluid p-5" width="300" alt="">
@@ -93,8 +116,8 @@ include "koneksi.php";
         <h1 class="fw-bold display-4 pb-3">article</h1>
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
           <?php
-          $sql = "SELECT * FROM article ORDER BY tanggal DESC";
-          $hasil = $conn->query($sql); 
+          $sql_article = "SELECT * FROM article ORDER BY tanggal DESC";
+          $hasil = $conn->query($sql_article); 
 
           while($row = $hasil->fetch_assoc()){
           ?>
@@ -123,25 +146,31 @@ include "koneksi.php";
     <!-- article end -->
 
     <!-- gallery begin -->
-    <section id="gallery" class="text-center p-5 bg-info-subtle">
+    <section id="gallery" class="text-center p-5 bg-danger-subtle">
       <h1 class="fw-bold display-4 pb-3">Gallery</h1>
       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner ratio ratio-16x9">
-          <div class="carousel-item active ratio" data-bs-interval="2000">
-            <img src="https://www.europeanprestige.co.uk/blobs/stock/280/images/ac53a765-1b63-4e73-9bc6-ee512679beaa/hi4a3023.jpg?width=2000&height=1333" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="https://www.jetgala.com/wp-content/uploads/2022/03/Portfolio-Magazine_McLaren720SSpiderbyMSO-cover-XBRp.jpg" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="https://media.drive.com.au/obj/tx_q:50,rs:auto:1920:1080:1/caradvice/upload/bb1ddbe8155f50fa9ea349736b608eca" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="https://www.topgear.com/sites/default/files/cars-car/image/2020/09/dsc05081.jpg" class="d-block w-100" alt="...">
-          </div>
-          <div class="carousel-item" data-bs-interval="2000">
-            <img src="https://www.exoticcarhacks.com/wp-content/uploads/2024/04/fuPM2G7Q.jpeg" class="d-block w-100" alt="...">
-          </div>
+          <?php
+          // Koneksi ke database
+          include 'koneksi.php';
+          
+          // Query untuk mengambil data dari tabel gallery
+          $sql_gallery = "SELECT * FROM gallery";
+          $result = $conn->query($sql_gallery); 
+          
+          $first = true; // Variable untuk menandai item pertama
+          
+          while($row = mysqli_fetch_assoc($result)) {
+            // Tambahkan class active untuk item pertama
+            $activeClass = $first ? 'active' : '';
+          ?>
+            <div class="carousel-item <?php echo $activeClass; ?>" data-bs-interval="2000">
+              <img src="img/<?= $row["gambar"]?>" class="d-block w-100">
+            </div>
+          <?php
+            $first = false; // Set false setelah item pertama
+          }
+          ?>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -155,13 +184,99 @@ include "koneksi.php";
     </section>
     <!-- gallery end -->
 
-    <!-- footer begin -->
-    <footer class="text-center pt-4">
-      <div>
-        <a href="https://x.com/McLarenF1"><i class="bi bi-instagram p-5 h2 p-2 text-dark"></i></a>
-        <a href="https://www.instagram.com/mclaren/"><i class="bi bi-twitter-x p-5 h2 p-2 text-dark"></i></a>
-        <a href="https://www.youtube.com/mclaren"><i class="bi bi-youtube p-5 h2 p-2 text-dark"></i></a>
+    <!-- schedule begin -->
+    <section id="schedule" class="text-center p-5">
+      <div class="container p-5">
+        <h1 class="fw-bold display-4 pb-3">Schedule</h1>
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              SENIN
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Etika Profesi <br> 16.20-18.00|H.4.4</li>
+              <li class="list-group-item">Sistem Operasi <br> 18.30-21.00|H.4.8</li>
+            </ul>
+          </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              SELASA
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Pendidikan Kewarganegaraan <br> 12.30-13.10|H.4.9</li>
+              <li class="list-group-item">Probabilitas <br> 14.30-16.00|H.4.7</li>
+              <li class="list-group-item">Kecerdasan Buatan <br> 09.30-12.00|H.4.1</li>
+            </ul>
+          </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              RABU
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Manajemen Proyek <br> 14.20-16.00|Kulino</li>
+            </ul>
+          </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              KAMIS
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Bahasa Indonesia <br> 16.20-18.00|Kulino</li>
+              <li class="list-group-item">Pendidikan Agama Islam <br> 18.30-21.00|H.4.8</li>
+              <li class="list-group-item">Penambangan Data <br> 09.30-12.00|H.5.5</li>
+            </ul>
+          </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              JUMAT
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Pemrograman Web <br> 16.20-18.00|D.2.K</li>
+            </ul>
+          </div>  
+          <div class="card" style="width: 18rem;">
+            <div class="card-header bg-danger">
+              SABTU
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">FREE</li>
+            </ul>
+          </div> 
+        </div> 
       </div>
+    </section>
+    <!-- schedule end -->
+
+    <!-- about me start -->
+    <section id="about" class="p-5 bg-danger-subtle">
+      <div class="container about-me-container">
+        <!-- ubah gambar menjadi besar ketika di klik -->
+        <img id="gambarBesar" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Donald_Trump_official_portrait.jpg/473px-Donald_Trump_official_portrait.jpg" class="rounded-circle img-fluid p-5" width="300" alt="">
+        <div id="about-text" class="text">
+          <h6 class="display-6">A11.2023.15388</h6>
+          <h4 class="fw-bold display-6">Radian Dhuha Farsainsa</h4>
+          <div class="">Program Studi Teknik Informatika</div>
+          <div class="fw-bold">Universitas Dian Nuswantoro</div>
+        </div>
+      </div>
+    </section>
+    <!-- about me end -->
+
+
+    <!-- footer begin -->
+    <footer class="text-center p-3 ">
+    <div>
+        <a href="https://www.instagram.com/udinusofficial"
+        ><i class="bi bi-instagram h2 p-2 text-dark"></i
+        ></a>
+        <a href="https://twitter.com/udinusofficial"
+        ><i class="bi bi-twitter h2 p-2 text-dark"></i
+        ></a>
+        <a href="https://wa.me/+62812685577"
+        ><i class="bi bi-whatsapp h2 p-2 text-dark"></i
+        ></a>
+    </div>
+    <div>Raddhuha &copy; 2025</div>
     </footer>
     <!-- footer end -->
 
@@ -209,8 +324,17 @@ include "koneksi.php";
           element.classList.add("bg-info-subtle"); // Kembalikan kelas
         });
       };
-    </script>
-    <script>
+      document.getElementById('hilang').addEventListener('click', function() {
+        const textElement = document.querySelector('.text');
+        textElement.style.display = 'none';
+      }); 
+
+      
+      document.getElementByClass('.text').addEventListener('click', function() {
+        const textElement = document.querySelector('hilang');
+        textElement.style.display = 'none';
+      }); 
+
       // Menambahkan tanggal dan waktu
       function tampilWaktu() {
         var waktu = new Date();
@@ -225,6 +349,16 @@ include "koneksi.php";
           tanggal + "/" + bulan + "/" + tahun;
         document.getElementById("jam").innerHTML =
           jam + ":" + menit + ":" + detik;
+      }
+
+      // Panggil fungsi tampilWaktu setiap detik
+      setInterval(tampilWaktu, 1000);
+    </script>
+    
+    <!-- menambahkan script untuk menampilkan gambar besar -->
+    <script>
+      function tampilkanGambarBesar(gambar) {
+          document.getElementById("gambarBesar").src = gambar;
       }
     </script>
   </body>

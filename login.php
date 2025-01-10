@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $password = md5($_POST['pass']);
 
 	//prepared statement
-  $stmt = $conn->prepare("SELECT username 
+  $stmt = $conn->prepare("SELECT id, username 
                           FROM user 
                           WHERE username=? AND password=?");
 
@@ -35,13 +35,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   //check apakah ada baris hasil data user yang cocok
   if (!empty($row)) {
-    //jika ada, simpan variable username pada session
+    //jika ada, simpan variable username dan id pada session
     $_SESSION['username'] = $row['username'];
+    $_SESSION['id'] = $row['id'];
 
     //mengalihkan ke halaman admin
     header("location:admin.php");
   } else {
 	  //jika tidak ada (gagal), alihkan kembali ke halaman login
+    echo "Username atau password salah!";
     header("location:login.php");
   }
 
